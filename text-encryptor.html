@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Encryptor/Decryptor - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff;
+            --toolzen-accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main { flex-grow: 1; }
+
+        /* Core Soft UI Style */
+        .soft-ui { background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start)); border-radius: 20px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+        .soft-ui-inset { border-radius: 12px; box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light); }
+        .soft-ui-interactive:hover { transform: translateY(-2px); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); }
+        .soft-ui-interactive:active { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+
+        /* Header */
+        .header-soft { background: var(--bg-color-start); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); }
+
+        /* Animations */
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+
+        /* Button Style */
+        .btn-soft {
+            padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: var(--primary-text); transition: all 0.3s ease;
+        }
+        
+        /* Tool-Specific Styles */
+        textarea, select, input {
+            width: 100%; min-height: 50px; background: transparent; border: none;
+            color: var(--primary-text); font-size: 1.1rem; padding: 15px; resize: vertical;
+        }
+        textarea:focus, select:focus, input:focus { outline: none; }
+        select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .nav-links-desktop { display: none; }
+            .mobile-menu-button { display: block; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i> ARAFAT'S TOOLS
+            </a>
+            <div class="hidden md:flex space-x-8 items-center font-semibold nav-links-desktop">
+                <a href="index.html" class="hover:text-[var(--toolzen-primary)]">Home</a>
+                <a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a>
+            </div>
+            <button id="mobileMenuBtn" class="md:hidden focus:outline-none text-2xl p-2 soft-ui soft-ui-interactive rounded-lg mobile-menu-button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+        <div id="mobileNav" class="hidden md:hidden border-t border-[var(--shadow-dark)]/30">
+            <a href="index.html" class="block text-center py-3 px-4 font-semibold hover:bg-white/50">Home</a>
+            <a href="tools.html" class="block text-center py-3 px-4 font-semibold hover:bg-white/50">All Tools</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="soft-ui max-w-4xl mx-auto p-6 md:p-10 animate-in">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold">Text Encryptor & Decryptor</h1>
+                <p class="text-lg md:text-xl mt-4 mb-8">Secure your text using various encryption methods.</p>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="soft-ui-inset">
+                    <textarea id="text-input" placeholder="Enter your plain text here..." class="min-h-[150px]"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 soft-ui-inset p-4">
+                    <div class="option-group">
+                        <label for="method" class="font-bold mb-2">Method</label>
+                        <div class="soft-ui-inset"><select id="method"><option value="base64">Base64</option><option value="caesar">Caesar Cipher</option><option value="xor">Key-based (XOR)</option></select></div>
+                    </div>
+                    <div class="option-group" id="key-group" style="display: none;">
+                        <label for="key" class="font-bold mb-2">Secret Key</label>
+                        <div class="soft-ui-inset"><input type="password" id="key" placeholder="Enter your secret key"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button class="btn-soft soft-ui-interactive" id="encrypt-btn" style="color: var(--accent-color);"><i class="fas fa-lock mr-2"></i> Encrypt</button>
+                    <button class="btn-soft soft-ui-interactive" id="decrypt-btn" style="color: var(--success-color);"><i class="fas fa-lock-open mr-2"></i> Decrypt</button>
+                </div>
+
+                <div class="soft-ui-inset">
+                    <textarea id="text-output" placeholder="Transformed text will appear here..." readonly class="min-h-[150px]"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button class="btn-soft soft-ui-interactive" id="copy-btn"><i class="fas fa-copy mr-2"></i> Copy Output</button>
+                    <button class="btn-soft soft-ui-interactive" id="clear-btn" style="color: var(--danger-color);"><i class="fas fa-trash mr-2"></i> Clear</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="mt-auto pt-12">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                <div><h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3></div>
+                <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="index.html" class="hover:text-[var(--toolzen-primary)]">Home</a></li>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                     </ul>
+                </div>
+                <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                </div>
+                <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-6 justify-center md:justify-start text-2xl">
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">&copy; 2025 ARAFAT'S TOOLS. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textInput = document.getElementById('text-input');
+            const textOutput = document.getElementById('text-output');
+            const methodSelect = document.getElementById('method');
+            const keyGroup = document.getElementById('key-group');
+            const keyInput = document.getElementById('key');
+            
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const decryptBtn = document.getElementById('decrypt-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+
+            const methods = {
+                base64: {
+                    encrypt: (text) => { try { return btoa(unescape(encodeURIComponent(text))); } catch(e) { return "Error: Could not encode text."; } },
+                    decrypt: (text) => { try { return decodeURIComponent(escape(atob(text))); } catch (e) { return "Error: Invalid Base64 string."; } }
+                },
+                caesar: {
+                    process: (text) => text.split('').map(char => {
+                        const code = char.charCodeAt(0);
+                        if (code >= 65 && code <= 90) return String.fromCharCode(((code - 65 + 13) % 26) + 65);
+                        if (code >= 97 && code <= 122) return String.fromCharCode(((code - 97 + 13) % 26) + 97);
+                        return char;
+                    }).join(''),
+                    encrypt: (text) => methods.caesar.process(text),
+                    decrypt: (text) => methods.caesar.process(text)
+                },
+                xor: {
+                    process: (text, key) => {
+                        if (!key) return "Error: A secret key is required for XOR.";
+                        let result = '';
+                        for (let i = 0; i < text.length; i++) {
+                            result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                        }
+                        return result;
+                    },
+                    encrypt: (text, key) => methods.xor.process(text, key),
+                    decrypt: (text, key) => methods.xor.process(text, key)
+                }
+            };
+            
+            methodSelect.addEventListener('change', () => {
+                keyGroup.style.display = (methodSelect.value === 'xor') ? 'block' : 'none';
+            });
+
+            encryptBtn.addEventListener('click', () => {
+                textOutput.value = methods[methodSelect.value].encrypt(textInput.value, keyInput.value);
+            });
+
+            decryptBtn.addEventListener('click', () => {
+                textOutput.value = methods[methodSelect.value].decrypt(textInput.value, keyInput.value);
+            });
+            
+            copyBtn.addEventListener('click', () => {
+                if (textOutput.value) {
+                    navigator.clipboard.writeText(textOutput.value).then(() => {
+                        const originalText = copyBtn.innerHTML;
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
+                    });
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                textInput.value = '';
+                textOutput.value = '';
+                keyInput.value = '';
+            });
+
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            mobileMenuBtn?.addEventListener('click', () => {
+                mobileNav.classList.toggle('hidden');
+                mobileMenuBtn.querySelector('i').className = mobileNav.classList.contains('hidden') ? 'fas fa-bars' : 'fas fa-times';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Mechanic - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff; 
+            --toolzen-accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+        }
+        
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+        .soft-ui-inset {
+            border-radius: 20px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light);
+        }
+        .soft-ui-interactive:hover:not(:active) {
+           transform: translateY(-2px);
+           box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+        }
+        .soft-ui-interactive:active {
+            transform: translateY(0);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header Styles */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+        }
+
+        /* Animation Keyframes and Class */
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        
+        /* Custom Button Style */
+        .btn-soft {
+            padding: 10px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: left;
+            display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: var(--primary-text);
+            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1); border: none;
+        }
+        
+        /* Tool Specific Styles */
+        textarea.textarea-soft {
+            width: 100%; height: 100%; min-height: 50vh; padding: 15px; border: none;
+            border-radius: 15px; font-size: 1rem; color: var(--primary-text);
+            background-color: var(--bg-color-start);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            outline: none; resize: none;
+        }
+        
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto;
+            background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+        }
+        .modal-content {
+             margin: 10% auto; padding: 30px; border-radius: 20px;
+             width: 90%; max-width: 500px;
+        }
+        .input-soft {
+            width: 100%; padding: 12px 20px; border: none; border-radius: 15px; font-size: 1rem;
+            color: var(--primary-text); background-color: var(--bg-color-start);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>
+                ARAFAT'S TOOLS
+            </a>
+            <div>
+                 <a href="tools.html" class="btn-soft !py-2 !px-4 !w-auto soft-ui-interactive"><i class="fas fa-arrow-left mr-2"></i> All Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center my-10 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold">Text Mechanic</h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">Your all-in-one tool for text manipulation and processing.</p>
+        </section>
+
+        <section class="grid lg:grid-cols-3 gap-8 animate-in" style="animation-delay: 100ms;">
+            <div class="lg:col-span-2 soft-ui p-4 flex flex-col">
+                <textarea id="text-input" class="textarea-soft" placeholder="Paste or type your text here..."></textarea>
+                
+                <div class="mt-4 p-4 soft-ui-inset rounded-xl">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-sm">
+                        <div class="stat-item">
+                            <div id="char-count" class="text-2xl font-bold" style="color:var(--toolzen-primary)">0</div>
+                            <div class="stat-label font-semibold">CHARACTERS</div>
+                        </div>
+                        <div class="stat-item">
+                            <div id="word-count" class="text-2xl font-bold" style="color:var(--toolzen-primary)">0</div>
+                            <div class="stat-label font-semibold">WORDS</div>
+                        </div>
+                        <div class="stat-item">
+                            <div id="line-count" class="text-2xl font-bold" style="color:var(--toolzen-primary)">0</div>
+                            <div class="stat-label font-semibold">LINES</div>
+                        </div>
+                        <div class="stat-item">
+                            <div id="para-count" class="text-2xl font-bold" style="color:var(--toolzen-primary)">0</div>
+                            <div class="stat-label font-semibold">PARAGRAPHS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-ui p-4 overflow-y-auto max-h-[75vh]">
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <button id="copy-btn" class="btn-soft !justify-center soft-ui-interactive" style="color:var(--success)" title="Copy"><i class="fas fa-copy"></i></button>
+                    <button id="clear-btn" class="btn-soft !justify-center soft-ui-interactive" style="color:var(--danger)" title="Clear"><i class="fas fa-eraser"></i></button>
+                    <button id="download-btn" class="btn-soft !justify-center soft-ui-interactive" style="color:var(--toolzen-primary)" title="Download"><i class="fas fa-download"></i></button>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="action-group">
+                        <h3 class="font-bold mb-2">Text Transform</h3>
+                        <div class="action-list space-y-2">
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="uppercase">UPPERCASE</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="lowercase">lowercase</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="capitalize">Capitalize Words</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="sentencecase">Sentence case</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="inversecase">InVeRsE cAsE</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="base64encode">Base64 Encode</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="base64decode">Base64 Decode</button>
+                        </div>
+                    </div>
+                    <div class="action-group">
+                        <h3 class="font-bold mb-2">Format</h3>
+                        <div class="action-list space-y-2">
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="trimspaces">Trim Spaces</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="removespaces">Remove Extra Spaces</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="removetabs">Remove Tabs</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="removeemptylines">Remove Empty Lines</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="sortlines">Sort Lines (A-Z)</button>
+                        </div>
+                    </div>
+                    <div class="action-group">
+                        <h3 class="font-bold mb-2">Lines</h3>
+                        <div class="action-list space-y-2">
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="addprefix">Add Prefix/Suffix</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="removelines">Remove Lines Containing</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="joinlines">Join Lines with Comma</button>
+                        </div>
+                    </div>
+                     <div class="action-group">
+                        <h3 class="font-bold mb-2">Extract</h3>
+                        <div class="action-list space-y-2">
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="extractemails">Extract Emails</button>
+                            <button class="btn-soft soft-ui-interactive action-btn" data-action="extracturls">Extract URLs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="contact" class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 pt-6">
+                &copy; 2025 ARAFAT'S TOOLS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <div id="input-modal" class="modal">
+        <div class="modal-content soft-ui">
+            <h2 id="modal-title" class="text-2xl font-bold mb-4">Action Settings</h2>
+            <div id="modal-fields" class="space-y-4"></div>
+            <div class="modal-actions mt-6 flex justify-end gap-4">
+                <button id="modal-cancel-btn" class="btn-soft" style="color:var(--danger)">Cancel</button>
+                <button id="modal-apply-btn" class="btn-soft" style="color:var(--success)">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const textArea = document.getElementById('text-input');
+            const actionBtns = document.querySelectorAll('.action-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            
+            const charCountEl = document.getElementById('char-count');
+            const wordCountEl = document.getElementById('word-count');
+            const lineCountEl = document.getElementById('line-count');
+            const paraCountEl = document.getElementById('para-count');
+            
+            const modal = document.getElementById('input-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalFields = document.getElementById('modal-fields');
+            const modalApplyBtn = document.getElementById('modal-apply-btn');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+
+            let currentModalAction = null;
+
+            function updateStats() {
+                const text = textArea.value;
+                charCountEl.textContent = text.length;
+                const words = text.match(/\S+/g) || [];
+                wordCountEl.textContent = words.length;
+                const lines = text.split('\n');
+                lineCountEl.textContent = text ? lines.length : 0;
+                const paragraphs = text.split(/\n{2,}/g).filter(p => p.trim().length > 0);
+                paraCountEl.textContent = paragraphs.length;
+            }
+            
+            function capitalizeSentence(text) { return text.replace(/(^|[.?!]\s+)([a-z])/g, (m, sep, char) => sep + char.toUpperCase()); }
+            function capitalizeWords(text) { return text.toLowerCase().replace(/(^|\s)\S/g, char => char.toUpperCase()); }
+            function inverseCase(text) { return text.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join(''); }
+            function utf8Encode(str) { return unescape(encodeURIComponent(str)); }
+            function utf8Decode(str) { return decodeURIComponent(escape(str)); }
+
+            const instantActions = {
+                'uppercase': () => textArea.value.toUpperCase(),
+                'lowercase': () => textArea.value.toLowerCase(),
+                'capitalize': () => capitalizeWords(textArea.value),
+                'sentencecase': () => capitalizeSentence(textArea.value),
+                'inversecase': () => inverseCase(textArea.value),
+                'base64encode': () => { try { return btoa(utf8Encode(textArea.value)); } catch (e) { alert("Encoding Error."); return textArea.value; } },
+                'base64decode': () => { try { return utf8Decode(atob(textArea.value)); } catch (e) { alert("Decoding Error: Invalid Base64."); return textArea.value; } },
+                'trimspaces': () => textArea.value.trim(),
+                'removespaces': () => textArea.value.replace(/\s+/g, ' '),
+                'removetabs': () => textArea.value.replace(/\t/g, ''),
+                'removeemptylines': () => textArea.value.split('\n').filter(line => line.trim() !== '').join('\n'),
+                'sortlines': () => textArea.value.split('\n').sort().join('\n'),
+                'joinlines': () => textArea.value.split('\n').filter(line => line.trim() !== '').join(', '),
+            };
+            
+            const modalActions = {
+                'addprefix': {
+                    title: "Add Prefix/Suffix",
+                    html: `<label for="prefix-input" class="font-semibold ml-2">Prefix:</label><input type="text" id="prefix-input" placeholder="e.g., [ID: " class="input-soft"><label for="suffix-input" class="font-semibold ml-2 mt-2">Suffix:</label><input type="text" id="suffix-input" placeholder="e.g., ]" class="input-soft">`,
+                    apply: () => {
+                        const prefix = document.getElementById('prefix-input').value;
+                        const suffix = document.getElementById('suffix-input').value;
+                        return textArea.value.split('\n').map(line => prefix + line + suffix).join('\n');
+                    }
+                },
+                'removelines': {
+                    title: "Remove Lines Containing",
+                    html: `<label for="remove-input" class="font-semibold ml-2">Text to find:</label><input type="text" id="remove-input" placeholder="e.g., spam" class="input-soft">`,
+                    apply: () => {
+                        const removeString = document.getElementById('remove-input').value.trim();
+                        if (!removeString) { alert("Please enter text to search for."); return textArea.value; }
+                        const filterRegex = new RegExp(removeString, 'i');
+                        return textArea.value.split('\n').filter(line => !filterRegex.test(line)).join('\n');
+                    }
+                },
+                'extractemails': {
+                    apply: () => {
+                        const matches = textArea.value.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g);
+                        if (!matches) { alert("No emails found."); return textArea.value; }
+                        return [...new Set(matches.map(e => e.toLowerCase()))].join('\n');
+                    }
+                },
+                'extracturls': {
+                    apply: () => {
+                        const matches = textArea.value.match(/(https?:\/\/[^\s]+|www\.[^\s]+)/g);
+                        if (!matches) { alert("No URLs found."); return textArea.value; }
+                        return [...new Set(matches)].join('\n');
+                    }
+                }
+            };
+            
+            function openModal(actionConfig, actionType) {
+                if (textArea.value.trim() === '') { alert("Please enter text first."); return; }
+                currentModalAction = actionType;
+                modalTitle.textContent = actionConfig.title;
+                modalFields.innerHTML = actionConfig.html;
+                modal.style.display = 'block';
+            }
+            
+            function closeModal() { modal.style.display = 'none'; currentModalAction = null; }
+            
+            function applyModalAction() {
+                if (currentModalAction && modalActions[currentModalAction].apply) {
+                    textArea.value = modalActions[currentModalAction].apply();
+                    updateStats();
+                }
+                closeModal();
+            }
+            
+            function handleAction(event) {
+                const action = event.target.closest('.action-btn').dataset.action;
+                if (instantActions[action]) {
+                    textArea.value = instantActions[action]();
+                } else if (modalActions[action]) {
+                    if (modalActions[action].html) {
+                        openModal(modalActions[action], action);
+                    } else {
+                        textArea.value = modalActions[action].apply();
+                    }
+                }
+                updateStats();
+            }
+            
+            textArea.addEventListener('input', updateStats);
+            actionBtns.forEach(button => button.addEventListener('click', handleAction));
+            copyBtn.addEventListener('click', () => navigator.clipboard.writeText(textArea.value));
+            clearBtn.addEventListener('click', () => { textArea.value = ''; updateStats(); });
+            downloadBtn.addEventListener('click', () => {
+                const blob = new Blob([textArea.value], {type: 'text/plain'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'text_mechanic_output.txt'; a.click();
+                URL.revokeObjectURL(url);
+            });
+            modalApplyBtn.addEventListener('click', applyModalAction);
+            modalCancelBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+            
+            updateStats();
+        });
+    </script>
+</body>
+</html>

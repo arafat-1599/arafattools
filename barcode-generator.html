@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Generator - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --accent-glow: rgba(0, 119, 255, 0.3);
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            /* ToolZen Colors for branding gradient */
+            --toolzen-primary: #0077ff; 
+            --toolzen-accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), 
+                        -8px -8px 16px var(--shadow-light);
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .soft-ui-inset {
+            border-radius: 20px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), 
+                        inset -7px -7px 14px var(--shadow-light);
+        }
+        
+        .soft-ui-interactive:hover {
+           transform: translateY(-5px) scale(1.02);
+           box-shadow: 12px 12px 24px var(--shadow-dark), 
+                       -12px -12px 24px var(--shadow-light);
+        }
+        
+        .soft-ui-interactive:active {
+            transform: translateY(0) scale(1);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), 
+                        inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header Styles */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), 
+                         -6px -6px 12px var(--shadow-light);
+        }
+
+        /* Animation Keyframes and Class */
+        @keyframes fadeInSlide {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.98); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+        
+        .animate-in {
+            animation: fadeInSlide 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        /* Custom Button Style */
+        .btn-soft {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+            color: var(--toolzen-primary);
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+        }
+        
+        .btn-soft:hover {
+            transform: translateY(-2px);
+            box-shadow: 8px 8px 16px var(--shadow-dark), 
+                        -8px -8px 16px var(--shadow-light);
+        }
+        
+        .btn-soft:active {
+            transform: translateY(0);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                        inset -4px -4px 8px var(--shadow-light);
+            color: var(--primary-text);
+        }
+
+        /* Form Input Styles */
+        .input-soft {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            color: var(--primary-text);
+            background-color: var(--bg-color-start);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), 
+                        inset -6px -6px 12px var(--shadow-light);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .input-soft::placeholder {
+            color: var(--primary-text);
+            opacity: 0.7;
+        }
+        
+        .input-soft-wrapper {
+             position: relative;
+        }
+
+        .input-soft-wrapper .fa-chevron-down {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--primary-text);
+        }
+        
+        .input-soft[type="color"] {
+             width: 50px;
+             height: 50px;
+             padding: 5px;
+             border-radius: 50%;
+             cursor: pointer;
+        }
+        
+        /* Tool Specific Styles */
+        #barcode-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px;
+        }
+        #barcode-container {
+            width: 100%;
+            height: 180px;
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>
+                ARAFAT'S TOOLS
+            </a>
+            <div>
+                <a href="tools.html" class="btn-soft soft-ui-interactive"><i class="fas fa-arrow-left mr-2"></i> All Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center my-10 md:my-16 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold mt-8">
+                Barcode Generator
+            </h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">
+                Generate high-quality barcodes (Code 128, EAN, UPC, etc.) from any text or number. Customize and download instantly.
+            </p>
+        </section>
+
+        <section class="grid md:grid-cols-2 gap-8 mt-12 animate-in" style="animation-delay: 100ms;">
+            
+            <div id="input-panel" class="soft-ui p-6 md:p-8">
+                <h2 class="text-2xl font-bold mb-6 text-center">Data & Customization</h2>
+                
+                <div class="mb-6">
+                    <label for="data-input" class="block mb-2 font-semibold">Text or Numbers to Encode</label>
+                    <input type="text" id="data-input" class="input-soft" placeholder="e.g., 123456789012" value="ToolZen123">
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 items-center">
+                    <div>
+                        <label for="barcode-type" class="block mb-2 font-semibold">Barcode Format</label>
+                        <div class="input-soft-wrapper">
+                            <select id="barcode-type" class="input-soft appearance-none">
+                                <option value="CODE128">Code 128</option>
+                                <option value="EAN13">EAN-13</option>
+                                <option value="UPC">UPC</option>
+                                <option value="CODE39">Code 39</option>
+                                <option value="ITF14">ITF-14</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                     <div>
+                        <label for="height-input" class="block mb-2 font-semibold">Height (px)</label>
+                        <input type="number" id="height-input" class="input-soft" value="100" min="50" max="300">
+                    </div>
+                     <div>
+                        <label for="bar-width-input" class="block mb-2 font-semibold">Bar Width</label>
+                        <input type="number" id="bar-width-input" class="input-soft" value="2" min="1" max="5">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label for="color-input" class="font-semibold">Bar Color</label>
+                        <input type="color" id="color-input" class="input-soft" value="#000000">
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button id="generate-btn" class="btn-soft w-full sm:w-auto">
+                        <i class="fas fa-barcode"></i> Generate Barcode
+                    </button>
+                </div>
+            </div>
+
+            <div id="output-panel" class="soft-ui p-6 md:p-8 flex flex-col justify-between">
+                <h2 class="text-2xl font-bold mb-6 text-center">Generated Barcode</h2>
+                
+                <div id="barcode-display">
+                    <div id="initial-placeholder" class="text-center opacity-70">
+                        <i class="fas fa-box-open text-5xl"></i>
+                        <p class="mt-4">Your barcode will appear here.</p>
+                    </div>
+                    <div id="barcode-container" class="soft-ui-inset" style="display: none;">
+                        <svg id="barcode-svg"></svg>
+                    </div>
+                </div>
+
+                <div class="download-actions flex flex-col sm:flex-row gap-4 mt-6" id="download-actions" style="display: none;">
+                    <button id="download-png-btn" class="btn-soft w-full">
+                        <i class="fas fa-download"></i> Download PNG
+                    </button>
+                    <button id="download-svg-btn" class="btn-soft w-full">
+                        <i class="fas fa-file-code"></i> Download SVG
+                    </button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer id="contact" class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                 <div>
+                     <h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">About Us</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-4 justify-center md:justify-start text-xl">
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                 </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">
+                &copy; 2025 ARAFAT'S TOOLS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dataInput = document.getElementById('data-input');
+            const generateBtn = document.getElementById('generate-btn');
+            const barcodeTypeSelect = document.getElementById('barcode-type');
+            const heightInput = document.getElementById('height-input');
+            const barWidthInput = document.getElementById('bar-width-input');
+            const colorInput = document.getElementById('color-input');
+            const barcodeSvg = document.getElementById('barcode-svg');
+            
+            const barcodeContainer = document.getElementById('barcode-container');
+            const initialPlaceholder = document.getElementById('initial-placeholder');
+            const downloadActions = document.getElementById('download-actions');
+            const downloadPngBtn = document.getElementById('download-png-btn');
+            const downloadSvgBtn = document.getElementById('download-svg-btn');
+            
+            function generateBarcode() {
+                const data = dataInput.value.trim();
+                const format = barcodeTypeSelect.value;
+                const height = parseInt(heightInput.value);
+                const width = parseInt(barWidthInput.value);
+                const color = colorInput.value;
+                const background = 'transparent';
+
+                if (!data) {
+                    barcodeContainer.style.display = 'none';
+                    initialPlaceholder.style.display = 'block';
+                    downloadActions.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    JsBarcode("#barcode-svg", data, {
+                        format: format,
+                        displayValue: true,
+                        text: data,
+                        textAlign: "center",
+                        fontSize: 18,
+                        height: height,
+                        width: width,
+                        lineColor: color,
+                        background: background,
+                        margin: 10,
+                        fontColor: "var(--primary-text)"
+                    });
+                    
+                    document.querySelector('#barcode-svg text').style.fill = 'var(--primary-text)';
+                    
+                    initialPlaceholder.style.display = 'none';
+                    barcodeContainer.style.display = 'flex';
+                    downloadActions.style.display = 'flex';
+
+                } catch (error) {
+                    alert(`Error generating barcode: ${error.message}. Please check your input data for the selected format (${format}).`);
+                    console.error(error);
+                }
+            }
+
+            function downloadSvg() {
+                const svgElement = barcodeContainer.querySelector('svg');
+                if (!svgElement) return;
+
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                
+                const link = document.createElement('a');
+                link.href = svgUrl;
+                link.download = `barcode-${Date.now()}.svg`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(svgUrl);
+            }
+
+            function downloadPng() {
+                const svgElement = barcodeContainer.querySelector('svg');
+                if (!svgElement) return;
+
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                const img = new Image();
+
+                const svgSize = svgElement.getBoundingClientRect();
+                canvas.width = svgSize.width + 20;
+                canvas.height = svgSize.height + 20;
+
+                img.onload = function() {
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-color-start').trim();
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 10, 10);
+
+                    const dataURL = canvas.toDataURL("image/png");
+                    const link = document.createElement('a');
+                    link.href = dataURL;
+                    link.download = `barcode-${Date.now()}.png`;
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            }
+            
+            generateBtn.addEventListener('click', generateBarcode);
+            dataInput.addEventListener('input', generateBarcode);
+            barcodeTypeSelect.addEventListener('change', generateBarcode);
+            heightInput.addEventListener('change', generateBarcode);
+            barWidthInput.addEventListener('change', generateBarcode);
+            colorInput.addEventListener('input', generateBarcode);
+            downloadSvgBtn.addEventListener('click', downloadSvg);
+            downloadPngBtn.addEventListener('click', downloadPng);
+
+            // Initial generation on page load
+            generateBarcode();
+        });
+    </script>
+</body>
+</html>

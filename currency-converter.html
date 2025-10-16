@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff;
+            --toolzen-accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex-grow: 1;
+        }
+
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+        .soft-ui-inset {
+            border-radius: 12px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light);
+        }
+        .soft-ui-interactive:hover {
+           transform: translateY(-5px);
+           box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+        }
+        .soft-ui-interactive:active {
+            transform: translateY(0);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+        }
+
+        /* Animations */
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+        
+        /* Tool-Specific Styles */
+        .tool-container-soft {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .currency-input-soft {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .currency-input-soft input, .currency-input-soft select {
+            background: transparent;
+            border: none;
+            color: var(--primary-text);
+            padding: 12px 15px;
+            font-size: 1.1rem;
+        }
+        .currency-input-soft input { flex-grow: 1; }
+        .currency-input-soft select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            padding-right: 35px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23526177'%3E%3Cpath d='M6 8L0 2h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            border-left: 1px solid rgba(0,0,0,0.1);
+        }
+        .currency-input-soft input:focus, .currency-input-soft select:focus {
+            outline: none;
+        }
+
+        #swap-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        #swap-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        #swap-btn:hover i {
+            transform: rotate(180deg);
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        #result-text { font-size: 1.5rem; font-weight: 600; }
+        #last-updated { font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8; }
+        
+        @media (max-width: 768px) {
+            .nav-links-desktop { display: none; }
+            .mobile-menu-button { display: block; }
+            .converter-body { flex-direction: column; }
+            #swap-btn { transform: rotate(90deg); }
+            #swap-btn:hover i { transform: rotate(270deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>ARAFAT'S TOOLS
+            </a>
+            <div class="hidden md:flex space-x-8 items-center font-semibold nav-links-desktop">
+                <a href="index.html" class="hover:text-[var(--toolzen-primary)] transition duration-300">Home</a>
+                <a href="tools.html" class="hover:text-[var(--toolzen-primary)] transition duration-300">All Tools</a>
+            </div>
+            <button id="mobileMenuBtn" class="md:hidden focus:outline-none text-2xl p-2 soft-ui soft-ui-interactive rounded-lg mobile-menu-button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+        <div id="mobileNav" class="hidden md:hidden border-t border-[var(--shadow-dark)]/30">
+            <a href="index.html" class="block text-center py-3 px-4 font-semibold hover:bg-white/50 transition duration-300">Home</a>
+            <a href="tools.html" class="block text-center py-3 px-4 font-semibold hover:bg-white/50 transition duration-300">All Tools</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="soft-ui tool-container-soft animate-in">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold">Currency Converter</h1>
+                <p class="text-lg md:text-xl mt-4 mb-10">Get real-time exchange rates for over 150 currencies.</p>
+            </div>
+            
+            <div class="converter-body flex items-center gap-6">
+                <div class="input-group flex-1">
+                    <label for="amount-from">Amount</label>
+                    <div class="soft-ui-inset currency-input-soft">
+                        <input type="number" id="amount-from" value="1.00" min="0">
+                        <select id="currency-from"></select>
+                    </div>
+                </div>
+
+                <button id="swap-btn" class="soft-ui soft-ui-interactive"><i class="fas fa-exchange-alt"></i></button>
+
+                <div class="input-group flex-1">
+                    <label for="currency-to">Converted To</label>
+                    <div class="soft-ui-inset currency-input-soft">
+                        <input type="text" id="amount-to" placeholder="0.00" readonly>
+                        <select id="currency-to"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-container soft-ui-inset">
+                <div id="result-text">Select currencies...</div>
+                <div id="last-updated"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="mt-auto pt-12">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                 <div><h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3></div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="index.html" class="hover:text-[var(--toolzen-primary)]">Home</a></li>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-6 justify-center md:justify-start text-2xl">
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                 </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">&copy; 2025 ARAFAT'S TOOLS. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currencyFromEl = document.getElementById('currency-from');
+            const currencyToEl = document.getElementById('currency-to');
+            const amountFromEl = document.getElementById('amount-from');
+            const amountToEl = document.getElementById('amount-to');
+            const swapBtn = document.getElementById('swap-btn');
+            const resultText = document.getElementById('result-text');
+            const lastUpdatedText = document.getElementById('last-updated');
+
+            const apiUrl = 'https://api.exchangerate-api.com/v4/latest/USD';
+            let rates = {};
+            
+            async function initialize() {
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error('Failed to fetch rates.');
+                    
+                    const data = await response.json();
+                    rates = data.rates;
+                    
+                    const currencies = Object.keys(rates);
+                    populateCurrencyOptions(currencies);
+                    
+                    currencyFromEl.value = 'USD';
+                    currencyToEl.value = 'EUR';
+                    
+                    updateLastUpdated(data.date);
+                    calculate();
+                } catch (error) {
+                    resultText.textContent = 'Error: Could not load exchange rates.';
+                    console.error(error);
+                }
+            }
+
+            function populateCurrencyOptions(currencies) {
+                currencies.forEach(currency => {
+                    const option1 = document.createElement('option');
+                    option1.value = currency;
+                    option1.textContent = currency;
+                    currencyFromEl.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = currency;
+                    option2.textContent = currency;
+                    currencyToEl.appendChild(option2);
+                });
+            }
+
+            function updateLastUpdated(date) {
+                const updatedDate = new Date(date);
+                lastUpdatedText.textContent = `Last Updated: ${updatedDate.toLocaleString()}`;
+            }
+
+            function calculate() {
+                const currencyFrom = currencyFromEl.value;
+                const currencyTo = currencyToEl.value;
+                const amountFrom = parseFloat(amountFromEl.value);
+
+                if (!rates[currencyFrom] || !rates[currencyTo]) return;
+                
+                const rate = rates[currencyTo] / rates[currencyFrom];
+                const amountTo = (amountFrom * rate).toFixed(2);
+                
+                amountToEl.value = amountTo;
+                
+                resultText.textContent = `${amountFrom.toFixed(2)} ${currencyFrom} = ${amountTo} ${currencyTo}`;
+            }
+
+            amountFromEl.addEventListener('input', calculate);
+            currencyFromEl.addEventListener('change', calculate);
+            currencyToEl.addEventListener('change', calculate);
+
+            swapBtn.addEventListener('click', () => {
+                const tempCurrency = currencyFromEl.value;
+                currencyFromEl.value = currencyToEl.value;
+                currencyToEl.value = tempCurrency;
+                calculate();
+            });
+
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            mobileMenuBtn?.addEventListener('click', () => {
+                mobileNav.classList.toggle('hidden');
+                mobileMenuBtn.querySelector('i').className = mobileNav.classList.contains('hidden') ? 'fas fa-bars' : 'fas fa-times';
+            });
+
+            initialize();
+        });
+    </script>
+</body>
+</html>

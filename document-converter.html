@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Document Converter - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`;
+    </script>
+
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff; 
+            --toolzen-accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+        
+        .soft-ui-inset {
+            border-radius: 20px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light);
+        }
+        
+        .soft-ui-interactive:hover {
+           transform: translateY(-5px) scale(1.02);
+           box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+        }
+        
+        .soft-ui-interactive:active {
+            transform: translateY(0) scale(1);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header Styles */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+        }
+
+        /* Animation Keyframes and Class */
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        
+        /* Custom Button Style */
+        .btn-soft {
+            padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: var(--toolzen-primary);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); border: none;
+        }
+        .btn-soft:hover { transform: translateY(-2px); box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+        .btn-soft:active { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+        .btn-soft:disabled { cursor: not-allowed; opacity: 0.6; }
+
+        /* Tool Specific Styles */
+        .upload-area {
+            border: 2px dashed var(--shadow-dark);
+            border-radius: 15px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--toolzen-primary);
+            background: var(--bg-color-start);
+        }
+        .upload-area i {
+            font-size: 2.5rem;
+            color: var(--toolzen-primary);
+            margin-bottom: 1rem;
+        }
+
+        .file-display {
+            padding: 1rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        .remove-btn {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .remove-btn:hover { color: var(--danger); }
+        
+        .select-wrapper { position: relative; }
+        .select-wrapper select {
+            -webkit-appearance: none; appearance: none;
+            background-color: var(--bg-color-start);
+            border-radius: 15px; padding: 12px 40px 12px 20px;
+            color: var(--primary-text); cursor: pointer; font-size: 1rem;
+            width: 100%; max-width: 200px;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            border: none;
+            outline: none;
+        }
+        .select-wrapper::after {
+            content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; top: 50%; right: 15px;
+            transform: translateY(-50%);
+            color: var(--primary-text);
+            pointer-events: none;
+        }
+
+        #status-area .spinner {
+            display: inline-block;
+            border: 3px solid rgba(82, 97, 119, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--toolzen-primary);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>
+                ARAFAT'S TOOLS
+            </a>
+            <div>
+                 <a href="tools.html" class="btn-soft soft-ui-interactive !py-2 !px-4"><i class="fas fa-arrow-left mr-2"></i> All Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center my-10 md:my-16 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold mt-8">Advanced Document Converter</h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">Convert PDF, DOCX, TXT, HTML, Markdown, and images. Secure, private, and powered by your browser.</p>
+        </section>
+
+        <section class="soft-ui p-6 md:p-8 max-w-3xl mx-auto animate-in" style="animation-delay: 100ms;">
+            <div id="upload-area" class="upload-area">
+                <i class="fas fa-file-upload"></i>
+                <p class="font-semibold text-lg">Drag & drop a file here</p>
+                <span class="text-sm opacity-80">or click to select a file</span>
+                <input type="file" id="file-input" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.html,.md" hidden>
+            </div>
+            
+            <div id="file-display-container" class="hidden">
+                <div id="file-display" class="file-display soft-ui-inset"></div>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 my-6">
+                    <span class="font-semibold">Convert to:</span>
+                    <div class="select-wrapper">
+                        <select id="output-format"></select>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button id="convert-btn" class="btn-soft">
+                        <i class="fas fa-sync-alt"></i> Convert File
+                    </button>
+                </div>
+            </div>
+            <div id="status-area" class="text-center mt-6 min-h-[24px] font-semibold"></div>
+        </section>
+    </main>
+    
+    <footer id="contact" class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                 <div>
+                     <h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">About Us</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-4 justify-center md:justify-start text-xl">
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                 </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">
+                &copy; 2025 ARAFAT'S TOOLS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const { PDFDocument } = PDFLib;
+            const { Packer, Document, Paragraph, TextRun } = docx;
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const fileDisplayContainer = document.getElementById('file-display-container');
+            const fileDisplay = document.getElementById('file-display');
+            const outputFormatSelect = document.getElementById('output-format');
+            const convertBtn = document.getElementById('convert-btn');
+            const statusArea = document.getElementById('status-area');
+            
+            let uploadedFile = null;
+            let inputFormat = '';
+
+            const conversionMap = {
+                'pdf': ['txt'],
+                'docx': ['pdf', 'txt', 'html'],
+                'txt': ['pdf', 'docx', 'html'],
+                'png': ['pdf'], 'jpg': ['pdf'], 'jpeg': ['pdf'],
+                'html': ['pdf', 'docx'],
+                'md': ['pdf', 'docx', 'html']
+            };
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    uploadArea.classList.toggle('dragover', eventName === 'dragenter' || eventName === 'dragover');
+                });
+            });
+            uploadArea.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
+
+            function handleFile(file) {
+                if (!file) return;
+                const extension = file.name.split('.').pop().toLowerCase();
+                if (!conversionMap[extension]) {
+                    setStatus(`Error: File type ".${extension}" is not supported.`, false);
+                    return;
+                }
+                uploadedFile = file;
+                inputFormat = extension;
+                fileDisplay.innerHTML = `<div class="flex items-center gap-3"><i class="fas fa-file-alt text-2xl" style="color:var(--toolzen-primary);"></i><span class="font-semibold">${file.name}</span></div><button class="remove-btn" id="remove-file-btn"><i class="fas fa-times"></i></button>`;
+                document.getElementById('remove-file-btn').addEventListener('click', resetUI);
+                updateOutputOptions(extension);
+                uploadArea.style.display = 'none';
+                fileDisplayContainer.style.display = 'block';
+                setStatus('', false);
+            }
+            
+            function resetUI() {
+                uploadedFile = null; inputFormat = ''; fileInput.value = '';
+                uploadArea.style.display = 'block';
+                fileDisplayContainer.style.display = 'none';
+                setStatus('', false);
+            }
+
+            function updateOutputOptions(extension) {
+                outputFormatSelect.innerHTML = (conversionMap[extension] || []).map(opt => `<option value="${opt}">${opt.toUpperCase()}</option>`).join('');
+            }
+
+            convertBtn.addEventListener('click', async () => {
+                if (!uploadedFile) return;
+                const outputFormat = outputFormatSelect.value;
+                setStatus('Converting...', true);
+                
+                try {
+                    const arrayBuffer = await uploadedFile.arrayBuffer();
+                    let outputBlob;
+                    const conversionKey = `${inputFormat}-to-${outputFormat}`;
+                    
+                    switch(conversionKey) {
+                        case 'pdf-to-txt':
+                            outputBlob = await convertPdfToTxt(arrayBuffer); break;
+                        case 'docx-to-pdf':
+                            outputBlob = await convertDocxToPdf(arrayBuffer); break;
+                        case 'docx-to-txt':
+                            outputBlob = await convertDocxToTxt(arrayBuffer); break;
+                        case 'docx-to-html':
+                            outputBlob = await convertDocxToHtml(arrayBuffer); break;
+                        case 'txt-to-pdf':
+                        case 'txt-to-html':
+                            const text = await uploadedFile.text();
+                            outputBlob = (outputFormat === 'pdf') ? await convertHtmlToPdf(`<pre>${text}</pre>`) : new Blob([`<pre>${text}</pre>`], { type: 'text/html' });
+                            break;
+                        case 'txt-to-docx':
+                            outputBlob = await convertTextToDocx(await uploadedFile.text()); break;
+                        case 'html-to-pdf':
+                            outputBlob = await convertHtmlToPdf(await uploadedFile.text()); break;
+                        case 'html-to-docx':
+                            const plainTextFromHtml = new DOMParser().parseFromString(await uploadedFile.text(), 'text/html').body.textContent || "";
+                            outputBlob = await convertTextToDocx(plainTextFromHtml); break;
+                        case 'md-to-html':
+                            outputBlob = new Blob([marked.parse(await uploadedFile.text())], { type: 'text/html' }); break;
+                        case 'md-to-pdf':
+                            const htmlFromMd = marked.parse(await uploadedFile.text());
+                            outputBlob = await convertHtmlToPdf(htmlFromMd); break;
+                        case 'md-to-docx':
+                            const textFromMd = marked.parse(await uploadedFile.text());
+                            const plainText = new DOMParser().parseFromString(textFromMd, 'text/html').body.textContent || "";
+                            outputBlob = await convertTextToDocx(plainText); break;
+                        case 'png-to-pdf':
+                        case 'jpg-to-pdf':
+                        case 'jpeg-to-pdf':
+                            outputBlob = await convertImageToPdf(arrayBuffer, inputFormat); break;
+                        default:
+                            throw new Error('Selected conversion path is not available.');
+                    }
+                    
+                    const outputFileName = uploadedFile.name.replace(/\.[^/.]+$/, "") + `.${outputFormat}`;
+                    saveAs(outputBlob, outputFileName);
+                    setStatus('Conversion successful!', false);
+                } catch (error) {
+                    console.error('Conversion Error:', error);
+                    setStatus(`Error: ${error.message}`, false);
+                }
+            });
+
+            async function convertPdfToTxt(arrayBuffer) {
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    fullText += textContent.items.map(item => item.str).join(' ') + '\n\n';
+                }
+                return new Blob([fullText], { type: 'text/plain' });
+            }
+
+            async function convertDocxToTxt(arrayBuffer) {
+                const { value } = await mammoth.extractRawText({ arrayBuffer });
+                return new Blob([value], { type: 'text/plain' });
+            }
+            
+            async function convertDocxToHtml(arrayBuffer) {
+                const { value } = await mammoth.convertToHtml({ arrayBuffer });
+                return new Blob([value], { type: 'text/html' });
+            }
+
+            async function convertDocxToPdf(arrayBuffer) {
+                const { value } = await mammoth.convertToHtml({ arrayBuffer });
+                return convertHtmlToPdf(value);
+            }
+
+            async function convertTextToDocx(text) {
+                const paragraphs = text.split('\n').map(line => new Paragraph({ children: [new TextRun(line)] }));
+                const doc = new Document({ sections: [{ children: paragraphs }] });
+                return await Packer.toBlob(doc);
+            }
+
+            async function convertHtmlToPdf(htmlContent) {
+                const element = document.createElement('div');
+                element.innerHTML = htmlContent;
+                Object.assign(element.style, { width: '210mm', padding: '10mm', boxSizing: 'border-box', color: 'black' });
+                document.body.appendChild(element);
+                
+                const blob = await html2pdf().from(element).set({
+                    margin: 1,
+                    filename: 'converted.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                }).output('blob');
+
+                document.body.removeChild(element);
+                return blob;
+            }
+            
+            async function convertImageToPdf(arrayBuffer, format) {
+                const pdfDoc = await PDFDocument.create();
+                const image = format === 'png' ? await pdfDoc.embedPng(arrayBuffer) : await pdfDoc.embedJpg(arrayBuffer);
+                const page = pdfDoc.addPage([image.width, image.height]);
+                page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+                const pdfBytes = await pdfDoc.save();
+                return new Blob([pdfBytes], { type: 'application/pdf' });
+            }
+
+            function setStatus(message, isLoading) {
+                statusArea.innerHTML = isLoading ? `<div class="spinner"></div><span>${message}</span>` : `<span>${message}</span>`;
+            }
+        });
+    </script>
+</body>
+</html>

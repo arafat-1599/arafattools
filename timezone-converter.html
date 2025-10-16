@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff; 
+            --toolzen-accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+        }
+        
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+        .soft-ui-inset {
+            border-radius: 20px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light);
+        }
+        .soft-ui-interactive:hover {
+           transform: translateY(-2px);
+           box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+        }
+        .soft-ui-interactive:active {
+            transform: translateY(0);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header Styles */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+        }
+
+        /* Animation Keyframes and Class */
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        
+        /* Custom Button Style */
+        .btn-soft {
+            padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: var(--primary-text);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); border: none;
+        }
+        .btn-soft:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+        .btn-soft:active:not(:disabled) { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+        .btn-soft:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Form Input Styles */
+        .input-soft {
+            width: 100%; padding: 12px 20px; border: none; border-radius: 15px; font-size: 1rem;
+            color: var(--primary-text); background-color: var(--bg-color-start);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            outline: none; transition: all 0.3s ease;
+        }
+        
+        .select-soft-wrapper { position: relative; }
+        .select-soft-wrapper::after {
+            content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; top: 50%; right: 20px; transform: translateY(-50%);
+            color: var(--primary-text); pointer-events: none;
+        }
+        .select-soft { -webkit-appearance: none; appearance: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>
+                ARAFAT'S TOOLS
+            </a>
+            <div>
+                 <a href="tools.html" class="btn-soft !py-2 !px-4 !w-auto soft-ui-interactive"><i class="fas fa-arrow-left mr-2"></i> All Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center my-10 md:my-16 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold mt-8">Global Time Zone Converter</h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">Instantly find the equivalent time and date in any global time zone.</p>
+        </section>
+
+        <section class="soft-ui p-6 md:p-8 animate-in" style="animation-delay: 100ms;">
+            <div id="settings-grid" class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="setting-group soft-ui-inset p-4 rounded-xl">
+                    <h3 class="font-bold text-lg mb-3 text-center">Source Time Zone</h3>
+                    <label for="timezone-from" class="font-semibold mb-2 ml-2"><i class="fas fa-location-arrow mr-2"></i>From</label>
+                    <div class="select-soft-wrapper">
+                        <select id="timezone-from" class="input-soft select-soft"></select>
+                    </div>
+                </div>
+
+                <div class="setting-group soft-ui-inset p-4 rounded-xl">
+                    <h3 class="font-bold text-lg mb-3 text-center">Input Time & Date</h3>
+                    <label for="date-input" class="font-semibold mb-2 ml-2"><i class="fas fa-calendar-alt mr-2"></i>Date</label>
+                    <input type="date" id="date-input" required class="input-soft">
+                    
+                    <label for="time-input" class="font-semibold mb-2 ml-2 mt-4"><i class="fas fa-clock mr-2"></i>Time</label>
+                    <input type="time" id="time-input" value="10:00" required class="input-soft">
+                </div>
+
+                <div class="setting-group soft-ui-inset p-4 rounded-xl">
+                    <h3 class="font-bold text-lg mb-3 text-center">Target Time Zone</h3>
+                    <label for="timezone-to" class="font-semibold mb-2 ml-2"><i class="fas fa-globe mr-2"></i>To</label>
+                     <div class="select-soft-wrapper">
+                        <select id="timezone-to" class="input-soft select-soft"></select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mb-8">
+                <button id="convert-btn" class="btn-soft soft-ui-interactive" disabled style="color:var(--toolzen-primary)">
+                    <i class="fas fa-exchange-alt"></i> Convert Time
+                </button>
+            </div>
+
+            <div id="results-panel" class="text-center">
+                <h2 class="text-2xl font-bold mb-4">Result in Target Zone</h2>
+                <div id="conversion-output" class="soft-ui-inset p-6 min-h-[120px] flex items-center justify-center">
+                    <div id="initial-placeholder" class="opacity-70">
+                        Enter a date and time to see the conversion.
+                    </div>
+                    <div id="output-display" class="hidden text-center">
+                        <div id="output-time" class="text-3xl font-bold" style="color:var(--success)"></div>
+                        <div id="output-date" class="text-lg mt-1"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="contact" class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                 <div>
+                     <h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">About Us</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-4 justify-center md:justify-start text-xl">
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                 </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">
+                &copy; 2025 ARAFAT'S TOOLS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timezoneFromSelect = document.getElementById('timezone-from');
+            const timezoneToSelect = document.getElementById('timezone-to');
+            const dateInput = document.getElementById('date-input');
+            const timeInput = document.getElementById('time-input');
+            const convertBtn = document.getElementById('convert-btn');
+            const outputTimeDiv = document.getElementById('output-time');
+            const outputDateDiv = document.getElementById('output-date');
+            const outputDisplay = document.getElementById('output-display');
+            const initialPlaceholder = document.getElementById('initial-placeholder');
+            
+            const TIME_ZONES = [
+                { id: "UTC", name: "UTC (Coordinated Universal Time)" },
+                { id: "America/New_York", name: "EST / EDT (New York)" },
+                { id: "America/Los_Angeles", name: "PST / PDT (Los Angeles)" },
+                { id: "Europe/London", name: "GMT / BST (London)" },
+                { id: "Europe/Paris", name: "CET / CEST (Paris)" },
+                { id: "Asia/Dubai", name: "GST (Dubai)" },
+                { id: "Asia/Kolkata", name: "IST (Mumbai / Kolkata)" },
+                { id: "Asia/Dhaka", name: "BST (Dhaka)" },
+                { id: "Asia/Shanghai", name: "CST (Shanghai / Beijing)" },
+                { id: "Asia/Tokyo", name: "JST (Tokyo)" },
+                { id: "Australia/Sydney", name: "AEST / AEDT (Sydney)" },
+                { id: "Pacific/Auckland", name: "NZST / NZDT (Auckland)" }
+            ];
+
+            function populateTimeZones() {
+                TIME_ZONES.forEach(zone => {
+                    const optionFrom = new Option(zone.name, zone.id);
+                    const optionTo = new Option(zone.name, zone.id);
+                    timezoneFromSelect.appendChild(optionFrom);
+                    timezoneToSelect.appendChild(optionTo);
+                });
+                timezoneFromSelect.value = "Europe/London";
+                timezoneToSelect.value = "Asia/Kolkata";
+            }
+
+            function validateInputs() {
+                convertBtn.disabled = !(dateInput.value && timeInput.value);
+            }
+
+            function convertTime() {
+                const dateStr = dateInput.value;
+                const timeStr = timeInput.value;
+                const fromZone = timezoneFromSelect.value;
+                const toZone = timezoneToSelect.value;
+
+                if (!dateStr || !timeStr) return;
+                
+                // Construct an ISO-like string without timezone info.
+                const sourceDateTimeString = `${dateStr}T${timeStr}:00`;
+
+                // Create a formatter for the *source* timezone to parse the string correctly.
+                const sourceFormatter = new Intl.DateTimeFormat('en-CA', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false,
+                    timeZone: fromZone
+                });
+                
+                // Parse the local date/time string as if it's in the source timezone.
+                const parts = sourceDateTimeString.split(/[-T:]/);
+                const sourceDate = new Date(Date.UTC(parts[0], parts[1]-1, parts[2], parts[3], parts[4], parts[5]));
+                
+                // Now, we need to adjust for the offset.
+                // This is a complex part because JS Date objects are tricky with timezones.
+                // Intl.DateTimeFormat is the safest way to *display* times in other zones.
+                
+                const targetFormatter = new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: true, timeZoneName: 'short',
+                    timeZone: toZone
+                });
+                
+                const formattedString = targetFormatter.format(sourceDate);
+                
+                // Extract parts from the fully formatted string
+                const timeMatch = formattedString.match(/(\d{1,2}:\d{2}:\d{2}\s[AP]M)/);
+                const dateMatch = formattedString.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4}/);
+                const zoneMatch = formattedString.match(/\b([A-Z]{3,5})\b$/);
+                
+                outputTimeDiv.textContent = timeMatch ? `${timeMatch[0]} (${zoneMatch ? zoneMatch[0] : ''})` : 'Invalid Time';
+                outputDateDiv.textContent = dateMatch ? dateMatch[0] : 'Invalid Date';
+
+                outputDisplay.classList.remove('hidden');
+                initialPlaceholder.classList.add('hidden');
+            }
+
+            dateInput.value = new Date().toISOString().split('T')[0];
+            populateTimeZones();
+            validateInputs();
+            convertTime(); 
+
+            [dateInput, timeInput, timezoneFromSelect, timezoneToSelect].forEach(el => {
+                el.addEventListener('change', () => {
+                    validateInputs();
+                    convertTime();
+                });
+            });
+
+            convertBtn.addEventListener('click', convertTime);
+
+            // No reset button in the new design, but keeping the logic in case it's added back
+            const resetBtn = document.getElementById('reset-btn'); 
+            if(resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    dateInput.value = new Date().toISOString().split('T')[0];
+                    timeInput.value = '10:00';
+                    populateTimeZones();
+                    outputDisplay.classList.add('hidden');
+                    initialPlaceholder.classList.remove('hidden');
+                    validateInputs();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

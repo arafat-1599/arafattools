@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temp Mail | ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --accent-glow: rgba(0, 119, 255, 0.3);
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            /* ToolZen Colors for branding gradient */
+            --toolzen-primary: #0077ff; 
+            --toolzen-accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), 
+                        -8px -8px 16px var(--shadow-light);
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .soft-ui-inset {
+            border-radius: 20px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), 
+                        inset -7px -7px 14px var(--shadow-light);
+        }
+        
+        .soft-ui-interactive:hover {
+           transform: translateY(-5px) scale(1.02);
+           box-shadow: 12px 12px 24px var(--shadow-dark), 
+                       -12px -12px 24px var(--shadow-light);
+        }
+        
+        .soft-ui-interactive:active {
+            transform: translateY(0) scale(1);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), 
+                        inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header Styles */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), 
+                         -6px -6px 12px var(--shadow-light);
+        }
+
+        /* Animation Keyframes and Class */
+        @keyframes fadeInSlide {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.98); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+        
+        .animate-in {
+            opacity: 0;
+            animation: fadeInSlide 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        /* Custom Button Style */
+        .btn-soft {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+            color: var(--toolzen-primary);
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+        }
+        
+        .btn-soft:hover {
+            transform: translateY(-2px);
+            box-shadow: 8px 8px 16px var(--shadow-dark), 
+                        -8px -8px 16px var(--shadow-light);
+        }
+        
+        .btn-soft:active {
+            transform: translateY(0);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), 
+                        inset -4px -4px 8px var(--shadow-light);
+            color: var(--primary-text);
+        }
+
+        .btn-soft-primary {
+            background: linear-gradient(145deg, var(--toolzen-primary), #0066dd);
+            color: white;
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+        }
+
+        .btn-soft-primary:hover {
+            background: linear-gradient(145deg, #0066dd, var(--toolzen-primary));
+        }
+
+        .btn-soft-success {
+            background: linear-gradient(145deg, #10B981, #0D9666);
+            color: white;
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+        }
+
+        .btn-soft-success:hover {
+            background: linear-gradient(145deg, #0D9666, #10B981);
+        }
+
+        .btn-soft-warning {
+            background: linear-gradient(145deg, #F59E0B, #D97706);
+            color: white;
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+        }
+
+        .btn-soft-warning:hover {
+            background: linear-gradient(145deg, #D97706, #F59E0B);
+        }
+
+        .btn-soft-danger {
+            background: linear-gradient(145deg, #EF4444, #DC2626);
+            color: white;
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+        }
+
+        .btn-soft-danger:hover {
+            background: linear-gradient(145deg, #DC2626, #EF4444);
+        }
+
+        /* Auth Box Styles */
+        .auth-box-soft {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), 
+                        -8px -8px 16px var(--shadow-light);
+            margin: 2rem auto;
+        }
+        
+        .auth-tabs-soft {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--shadow-dark);
+            padding-bottom: 10px;
+        }
+        
+        .auth-tabs-soft button {
+            flex: 1;
+            padding: 15px;
+            font-size: 1rem;
+            background: none;
+            border: none;
+            color: var(--primary-text);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        .auth-tabs-soft button.active {
+            color: var(--toolzen-primary);
+            background: var(--bg-color-start);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                        inset -3px -3px 6px var(--shadow-light);
+        }
+        
+        .form-content {
+            display: none;
+        }
+        
+        .form-content.active {
+            display: block;
+        }
+        
+        .input-group-soft {
+            margin-bottom: 20px;
+        }
+        
+        .input-group-soft label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--primary-text);
+            font-weight: 600;
+        }
+        
+        .input-group-soft input, .input-group-soft select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-color-start);
+            border: none;
+            border-radius: 10px;
+            color: var(--primary-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), 
+                        inset -5px -5px 10px var(--shadow-light);
+        }
+        
+        .input-group-soft input:focus, .input-group-soft select:focus {
+            outline: none;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                        inset -3px -3px 6px var(--shadow-light),
+                        0 0 0 2px var(--toolzen-primary);
+        }
+        
+        .input-group-soft .user-domain-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group-soft .user-domain-group input {
+            flex: 1;
+        }
+        
+        .input-group-soft .user-domain-group select {
+            flex-basis: 150px;
+        }
+
+        /* Inbox View Styles */
+        .inbox-container-soft {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), 
+                        -8px -8px 16px var(--shadow-light);
+            overflow: hidden;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+        
+        .inbox-header-soft {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--shadow-dark);
+            flex-shrink: 0;
+            background: var(--bg-color-start);
+        }
+        
+        .email-info-soft {
+            user-select: all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: var(--bg-color-start);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                        inset -3px -3px 6px var(--shadow-light);
+        }
+        
+        .email-info-soft:hover {
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+        }
+        
+        .email-info-soft .label {
+            font-size: 0.9rem;
+            color: var(--primary-text);
+        }
+        
+        .email-info-soft .address {
+            font-weight: bold;
+            color: var(--toolzen-primary);
+            font-size: 1.1rem;
+        }
+        
+        .header-actions-soft {
+            display: flex;
+            gap: 10px;
+        }
+
+        .inbox-main-soft {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            height: 600px;
+        }
+
+        #message-list-panel {
+            width: 35%;
+            min-width: 350px;
+            border-right: 1px solid var(--shadow-dark);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-color-start);
+        }
+        
+        #message-list {
+            list-style: none;
+        }
+        
+        #message-list li {
+            padding: 20px;
+            border-bottom: 1px solid var(--shadow-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-color-start);
+        }
+        
+        #message-list li.active {
+            background: linear-gradient(145deg, var(--toolzen-primary), #0066dd);
+            color: white;
+            box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.2), 
+                        inset -3px -3px 6px rgba(255, 255, 255, 0.2);
+        }
+        
+        #message-list li:hover:not(.active) {
+            background: var(--bg-color-end);
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 10px var(--shadow-dark), 
+                        -5px -5px 10px var(--shadow-light);
+        }
+        
+        .msg-from {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .msg-subject {
+            color: var(--primary-text);
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+        
+        .msg-date {
+            color: var(--primary-text);
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        #inbox-placeholder {
+            text-align: center;
+            padding: 60px 40px;
+            color: var(--primary-text);
+            font-size: 1.1rem;
+        }
+
+        #message-viewer-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-color-start);
+        }
+        
+        #viewer-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            color: var(--primary-text);
+            font-size: 1.3rem;
+            padding: 0 20px;
+        }
+        
+        #message-viewer {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .message-header-soft {
+            padding: 25px;
+            border-bottom: 1px solid var(--shadow-dark);
+            flex-shrink: 0;
+            background: var(--bg-color-start);
+        }
+        
+        .message-header-soft h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-text);
+            font-weight: 700;
+        }
+        
+        .message-header-soft p {
+            font-size: 1rem;
+            color: var(--primary-text);
+            margin-bottom: 8px;
+        }
+        
+        .message-body-soft {
+            flex-grow: 1;
+            overflow: auto;
+            padding: 30px;
+            background: white;
+            color: #333;
+            line-height: 1.6;
+            border-radius: 0 0 20px 0;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-left: auto;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: var(--bg-color-start);
+            box-shadow: 0 5px 15px var(--shadow-dark);
+            z-index: 99;
+            animation: fadeInSlide 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            display: block;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        .mobile-nav-links li {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid var(--shadow-dark);
+            transition: background 0.3s ease;
+        }
+
+        .mobile-nav-links li:hover {
+            background: rgba(0, 119, 255, 0.1);
+        }
+
+        .mobile-nav-links a {
+            color: var(--primary-text);
+            text-decoration: none;
+            display: block;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            color: var(--toolzen-primary);
+        }
+
+        /* Utility Styles */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--toolzen-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--toolzen-primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px var(--shadow-dark);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-weight: 600;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .inbox-main-soft {
+                flex-direction: column;
+                height: auto;
+                min-height: 600px;
+            }
+            
+            #message-list-panel {
+                width: 100%;
+                min-width: auto;
+                max-height: 300px;
+                border-right: none;
+                border-bottom: 1px solid var(--shadow-dark);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .inbox-header-soft {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .header-actions-soft {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .header-actions-soft .btn-soft {
+                flex: 1;
+                margin: 0 5px;
+            }
+            
+            .auth-box-soft {
+                padding: 20px;
+                margin: 0 15px;
+            }
+            
+            .inbox-container-soft {
+                margin: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>
+                ARAFAT'S TOOLS
+            </a>
+            
+            <div class="nav-links">
+                <a href="tools.html" class="mx-3 hover:text-[var(--toolzen-primary)]">All Tools</a>
+                <a href="#" class="mx-3 hover:text-[var(--toolzen-primary)]">Features</a>
+                <a href="#" class="mx-3 hover:text-[var(--toolzen-primary)]">Contact</a>
+            </div>
+            
+            <div id="auth-container">
+                <button id="loginBtn" class="btn-soft soft-ui-interactive">Login</button>
+                <button id="logoutBtn" class="btn-soft soft-ui-interactive hidden">Logout</button>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+        <div class="mobile-nav" id="mobileNav">
+            <ul class="mobile-nav-links">
+                <li><a href="tools.html">All Tools</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center my-10 md:my-16 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold mt-8 flex items-center justify-center gap-4">
+                <i class="fas fa-envelope text-[var(--toolzen-primary)]"></i>
+                Temp Mail
+            </h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">
+                Your secure and private temporary email solution. Receive emails without signing up with your personal address.
+            </p>
+        </section>
+
+        <section class="animate-in" style="animation-delay: 100ms;">
+            <div id="auth-view">
+                <div class="auth-box-soft soft-ui-interactive">
+                    <div class="auth-tabs-soft">
+                        <button id="tab-create" class="active">Create Account</button>
+                        <button id="tab-login">Login</button>
+                    </div>
+                    <div id="form-create" class="form-content active">
+                        <div class="input-group-soft">
+                            <label for="create-username">Username</label>
+                            <div class="user-domain-group">
+                                <input type="text" id="create-username" placeholder="e.g., john.doe">
+                                <select id="create-domain"></select>
+                            </div>
+                        </div>
+                        <div class="input-group-soft">
+                            <label for="create-password">Password</label>
+                            <input type="password" id="create-password" placeholder="Choose a strong password">
+                        </div>
+                        <button id="create-btn" class="btn-soft btn-soft-primary w-full">Create Account</button>
+                    </div>
+                    <div id="form-login" class="form-content">
+                        <div class="input-group-soft">
+                            <label for="login-address">Email Address</label>
+                            <input type="email" id="login-address" placeholder="user@example.com">
+                        </div>
+                        <div class="input-group-soft">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password">
+                        </div>
+                        <button id="login-btn" class="btn-soft btn-soft-primary w-full">Login</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inbox-view" class="hidden">
+                <div class="inbox-container-soft soft-ui-interactive">
+                    <header class="inbox-header-soft">
+                        <div class="email-info-soft soft-ui-interactive" title="Click to copy">
+                            <div class="label">Your Email Address</div>
+                            <div class="address" id="current-email-address"></div>
+                        </div>
+                        <div class="header-actions-soft">
+                            <button id="refresh-btn" class="btn-soft">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button id="logout-btn" class="btn-soft btn-soft-danger">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </header>
+                    <main class="inbox-main-soft">
+                        <div id="message-list-panel">
+                            <ul id="message-list">
+                                <div id="inbox-placeholder">
+                                    <i class="fas fa-inbox text-5xl mb-4 opacity-50"></i>
+                                    <p>Waiting for emails...</p>
+                                    <p class="text-sm mt-2">Your inbox is empty. Share your email address to receive messages.</p>
+                                </div>
+                            </ul>
+                        </div>
+                        <div id="message-viewer-panel">
+                            <div id="viewer-placeholder">
+                                <div>
+                                    <i class="fas fa-envelope-open text-6xl mb-4 opacity-50"></i>
+                                    <p>Select an email from the list to view its content.</p>
+                                </div>
+                            </div>
+                            <div id="message-viewer">
+                                <div class="message-header-soft">
+                                    <h2 id="msg-viewer-subject"></h2>
+                                    <p><strong>From:</strong> <span id="msg-viewer-from"></span></p>
+                                    <p><strong>Date:</strong> <span id="msg-viewer-date"></span></p>
+                                </div>
+                                <div class="message-body-soft" id="msg-viewer-body">
+                                    <!-- Email content will appear here -->
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                 <div>
+                     <h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Features</a></li>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Contact</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-6 justify-center md:justify-start text-2xl">
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                 </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">
+                &copy; 2025 ARAFAT'S TOOLS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <div class="loader-overlay" id="loader-overlay">
+        <div class="loader"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const app = {
+            // State
+            state: {
+                account: null,
+                token: null,
+                messages: [],
+                eventSource: null,
+            },
+
+            // DOM Elements
+            els: {
+                loader: document.getElementById('loader-overlay'),
+                authView: document.getElementById('auth-view'),
+                inboxView: document.getElementById('inbox-view'),
+                tabCreate: document.getElementById('tab-create'),
+                tabLogin: document.getElementById('tab-login'),
+                formCreate: document.getElementById('form-create'),
+                formLogin: document.getElementById('form-login'),
+                createUsername: document.getElementById('create-username'),
+                createDomain: document.getElementById('create-domain'),
+                createPassword: document.getElementById('create-password'),
+                createBtn: document.getElementById('create-btn'),
+                loginAddress: document.getElementById('login-address'),
+                loginPassword: document.getElementById('login-password'),
+                loginBtn: document.getElementById('login-btn'),
+                currentEmail: document.getElementById('current-email-address'),
+                refreshBtn: document.getElementById('refresh-btn'),
+                logoutBtn: document.getElementById('logout-btn'),
+                messageList: document.getElementById('message-list'),
+                inboxPlaceholder: document.getElementById('inbox-placeholder'),
+                viewerPlaceholder: document.getElementById('viewer-placeholder'),
+                messageViewer: document.getElementById('message-viewer'),
+                msgViewerSubject: document.getElementById('msg-viewer-subject'),
+                msgViewerFrom: document.getElementById('msg-viewer-from'),
+                msgViewerDate: document.getElementById('msg-viewer-date'),
+                msgViewerBody: document.getElementById('msg-viewer-body'),
+                toast: document.getElementById('toast'),
+                loginBtnHeader: document.getElementById('loginBtn'),
+                logoutBtnHeader: document.getElementById('logoutBtn'),
+                mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+                mobileNav: document.getElementById('mobileNav'),
+            },
+
+            // API Configuration
+            api: {
+                baseUrl: 'https://api.mail.tm',
+                async request(endpoint, options = {}) {
+                    app.showLoader(true);
+                    try {
+                        const response = await fetch(`${this.baseUrl}${endpoint}`, options);
+                        if (!response.ok) {
+                            const error = await response.json();
+                            throw new Error(error.detail || error.message || `HTTP Error: ${response.status}`);
+                        }
+                        return response.status === 204 ? null : response.json();
+                    } catch (error) {
+                        app.showToast(`Error: ${error.message}`, 'error');
+                        console.error('API Error:', error);
+                        return null;
+                    } finally {
+                        app.showLoader(false);
+                    }
+                }
+            },
+
+            // Initialization
+            init() {
+                this.addEventListeners();
+                this.loadSession();
+                this.fetchDomains();
+                
+                // Initialize animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate-in');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { 
+                    threshold: 0.1
+                });
+                
+                document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+            },
+            
+            // Event Listeners
+            addEventListeners() {
+                this.els.tabCreate.addEventListener('click', () => this.switchTab('create'));
+                this.els.tabLogin.addEventListener('click', () => this.switchTab('login'));
+                this.els.createBtn.addEventListener('click', () => this.handleCreateAccount());
+                this.els.loginBtn.addEventListener('click', () => this.handleLogin());
+                this.els.logoutBtn.addEventListener('click', () => this.handleLogout());
+                this.els.refreshBtn.addEventListener('click', () => this.fetchMessages());
+                this.els.currentEmail.parentElement.addEventListener('click', () => this.copyEmail());
+                
+                // Mobile menu
+                this.els.mobileMenuBtn.addEventListener('click', () => {
+                    this.els.mobileNav.classList.toggle('active');
+                    const icon = this.els.mobileMenuBtn.querySelector('i');
+                    icon.className = this.els.mobileNav.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+                });
+                
+                // Header auth buttons
+                this.els.loginBtnHeader.addEventListener('click', () => {
+                    this.showAuthView();
+                    this.switchTab('login');
+                });
+                this.els.logoutBtnHeader.addEventListener('click', () => this.handleLogout());
+                
+                // Enter key support for forms
+                this.els.createPassword.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleCreateAccount();
+                });
+                this.els.loginPassword.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleLogin();
+                });
+            },
+
+            // Core Logic
+            async loadSession() {
+                const session = localStorage.getItem('mailtm_session');
+                if (session) {
+                    try {
+                        const { account, token } = JSON.parse(session);
+                        this.state.account = account;
+                        this.state.token = token;
+                        
+                        // Verify token is still valid
+                        const me = await this.api.request('/me', {
+                            headers: { 'Authorization': `Bearer ${this.state.token}` }
+                        });
+                        
+                        if (me) {
+                            this.state.account = me;
+                            this.showInboxView();
+                            await this.fetchMessages();
+                            this.showToast('Welcome back!', 'success');
+                        } else {
+                            this.clearSession();
+                            this.showAuthView();
+                        }
+                    } catch (error) {
+                        console.error('Session load error:', error);
+                        this.clearSession();
+                        this.showAuthView();
+                    }
+                } else {
+                    // No session found - show auth view
+                    this.showAuthView();
+                }
+            },
+            
+            saveSession() {
+                const session = { account: this.state.account, token: this.state.token };
+                localStorage.setItem('mailtm_session', JSON.stringify(session));
+            },
+
+            clearSession() {
+                localStorage.removeItem('mailtm_session');
+                if (this.state.eventSource) {
+                    this.state.eventSource.close();
+                }
+                this.state = { account: null, token: null, messages: [], eventSource: null };
+            },
+
+            async handleCreateAccount() {
+                const username = this.els.createUsername.value.trim();
+                const domain = this.els.createDomain.value;
+                const password = this.els.createPassword.value;
+                
+                if (!username || !password) {
+                    return this.showToast('Username and password are required.', 'error');
+                }
+
+                const address = `${username}@${domain}`;
+                const account = await this.api.request('/accounts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, password }),
+                });
+
+                if (account) {
+                    this.showToast('Account created successfully!', 'success');
+                    await this.login(address, password);
+                }
+            },
+
+            async handleLogin() {
+                const address = this.els.loginAddress.value.trim();
+                const password = this.els.loginPassword.value;
+                if (!address || !password) {
+                    return this.showToast('Email and password are required.', 'error');
+                }
+                await this.login(address, password);
+            },
+            
+            async login(address, password) {
+                const tokenData = await this.api.request('/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, password }),
+                });
+
+                if (tokenData && tokenData.token) {
+                    this.state.token = tokenData.token;
+                    const me = await this.api.request('/me', {
+                        headers: { 'Authorization': `Bearer ${this.state.token}` }
+                    });
+                    
+                    if (me) {
+                        this.state.account = me;
+                        this.saveSession();
+                        this.showInboxView();
+                        await this.fetchMessages();
+                        this.showToast('Successfully logged in!', 'success');
+                        
+                        // Clear form fields
+                        this.els.loginAddress.value = '';
+                        this.els.loginPassword.value = '';
+                        this.els.createUsername.value = '';
+                        this.els.createPassword.value = '';
+                    }
+                } else {
+                    this.showToast('Login failed. Please check your credentials.', 'error');
+                }
+            },
+            
+            handleLogout() {
+                this.clearSession();
+                this.renderMessageList();
+                this.showAuthView();
+                this.showToast('Logged out successfully.', 'info');
+            },
+
+            async fetchDomains() {
+                const data = await this.api.request('/domains');
+                if (data && data['hydra:member']) {
+                    this.els.createDomain.innerHTML = data['hydra:member']
+                        .filter(d => d.isActive)
+                        .map(d => `<option value="${d.domain}">${d.domain}</option>`)
+                        .join('');
+                } else {
+                    // Fallback domains if API fails
+                    this.els.createDomain.innerHTML = `
+                        <option value="mail.tm">mail.tm</option>
+                        <option value="example.com">example.com</option>
+                    `;
+                }
+            },
+
+            async fetchMessages() {
+                if (!this.state.token) {
+                    this.showToast('Please log in to fetch messages.', 'error');
+                    return;
+                }
+                
+                const data = await this.api.request('/messages', {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+                
+                if (data && data['hydra:member']) {
+                    this.state.messages = data['hydra:member'];
+                    this.renderMessageList();
+                    
+                    if (this.state.messages.length > 0) {
+                        this.showToast(`Loaded ${this.state.messages.length} messages`, 'success');
+                    } else {
+                        this.showToast('No messages found', 'info');
+                    }
+                } else {
+                    this.showToast('Failed to load messages', 'error');
+                }
+            },
+            
+            // UI Manipulation
+            showLoader(show) { 
+                this.els.loader.style.display = show ? 'flex' : 'none'; 
+            },
+            
+            showAuthView() {
+                this.els.authView.style.display = 'block';
+                this.els.inboxView.style.display = 'none';
+                this.els.loginBtnHeader.classList.remove('hidden');
+                this.els.logoutBtnHeader.classList.add('hidden');
+            },
+
+            showInboxView() {
+                this.els.authView.style.display = 'none';
+                this.els.inboxView.style.display = 'block';
+                this.els.loginBtnHeader.classList.add('hidden');
+                this.els.logoutBtnHeader.classList.remove('hidden');
+                if (this.state.account) {
+                    this.els.currentEmail.textContent = this.state.account.address;
+                }
+            },
+
+            switchTab(tab) {
+                if (tab === 'create') {
+                    this.els.tabCreate.classList.add('active');
+                    this.els.tabLogin.classList.remove('active');
+                    this.els.formCreate.classList.add('active');
+                    this.els.formLogin.classList.remove('active');
+                } else {
+                    this.els.tabLogin.classList.add('active');
+                    this.els.tabCreate.classList.remove('active');
+                    this.els.formLogin.classList.add('active');
+                    this.els.formCreate.classList.remove('active');
+                }
+            },
+            
+            renderMessageList() {
+                this.els.messageList.innerHTML = '';
+                
+                if (this.state.messages.length > 0) {
+                    this.els.inboxPlaceholder.style.display = 'none';
+                    
+                    this.state.messages
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .forEach(msg => {
+                            const li = document.createElement('li');
+                            li.dataset.id = msg.id;
+                            
+                            const date = new Date(msg.createdAt).toLocaleString();
+                            
+                            li.innerHTML = `
+                                <div class="msg-from">${msg.from.name || msg.from.address}</div>
+                                <div class="msg-subject">${msg.subject || '(no subject)'}</div>
+                                <div class="msg-date">${date}</div>
+                            `;
+                            li.addEventListener('click', () => this.showMessage(msg.id));
+                            this.els.messageList.appendChild(li);
+                        });
+                } else {
+                    this.els.inboxPlaceholder.style.display = 'block';
+                    this.els.messageList.appendChild(this.els.inboxPlaceholder);
+                }
+            },
+            
+            async showMessage(id) {
+                // Highlight active message
+                document.querySelectorAll('#message-list li').forEach(li => {
+                    li.classList.remove('active');
+                });
+                document.querySelector(`#message-list li[data-id="${id}"]`).classList.add('active');
+
+                this.els.viewerPlaceholder.style.display = 'none';
+                this.els.messageViewer.style.display = 'flex';
+
+                const message = await this.api.request(`/messages/${id}`, {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+
+                if (message) {
+                    this.els.msgViewerSubject.textContent = message.subject || '(no subject)';
+                    this.els.msgViewerFrom.textContent = message.from.address;
+                    
+                    const date = new Date(message.createdAt).toLocaleString();
+                    this.els.msgViewerDate.textContent = date;
+                    
+                    // Display message content
+                    if (message.html && message.html.length > 0) {
+                        this.els.msgViewerBody.innerHTML = message.html[0];
+                    } else if (message.text) {
+                        this.els.msgViewerBody.innerHTML = `<pre>${message.text}</pre>`;
+                    } else {
+                        this.els.msgViewerBody.innerHTML = '<p>No content available</p>';
+                    }
+                }
+            },
+            
+            copyEmail() {
+                navigator.clipboard.writeText(this.els.currentEmail.textContent).then(() => {
+                    this.showToast('Email address copied to clipboard!', 'success');
+                }).catch(err => {
+                    this.showToast('Failed to copy email address', 'error');
+                    console.error('Copy error:', err);
+                });
+            },
+            
+            showToast(message, type = 'info') {
+                const toast = this.els.toast;
+                toast.textContent = message;
+                
+                // Set color based on type
+                if (type === 'error') {
+                    toast.style.backgroundColor = 'var(--toolzen-primary)';
+                } else if (type === 'success') {
+                    toast.style.backgroundColor = '#10B981';
+                } else {
+                    toast.style.backgroundColor = 'var(--toolzen-primary)';
+                }
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        };
+
+        app.init();
+    });
+    </script>
+</body>
+</html>

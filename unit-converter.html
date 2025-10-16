@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff;
+            --toolzen-accent: #F59E0B;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+        }
+
+        /* Core Soft UI Style */
+        .soft-ui { background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start)); border-radius: 20px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+        .soft-ui-inset { border-radius: 12px; box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light); }
+        .soft-ui-interactive:hover { transform: translateY(-2px); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); }
+        .soft-ui-interactive:active { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+
+        /* Header */
+        .header-soft { background: var(--bg-color-start); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); }
+
+        /* Animations */
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+
+        /* Button Style */
+        .btn-soft {
+            padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: var(--primary-text); transition: all 0.3s ease;
+        }
+        .btn-soft:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+        .btn-soft:active:not(:disabled) { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+        .btn-soft:disabled { opacity: 0.6; cursor: not-allowed; transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+        
+        /* Tool-Specific Styles */
+        .input-group label, .select-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        select, input[type="number"] {
+            width: 100%; padding: 12px; background: transparent; border: none; color: var(--primary-text); font-size: 1rem;
+        }
+        select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+        select:focus, input[type="number"]:focus { outline: none; }
+        
+        #initial-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; }
+
+        @media (max-width: 768px) {
+            .nav-links-desktop { display: none; }
+            .mobile-menu-button { display: block; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i> ARAFAT'S TOOLS
+            </a>
+            <div class="hidden md:flex space-x-8 items-center font-semibold nav-links-desktop">
+                <a href="index.html" class="hover:text-[var(--toolzen-primary)] transition duration-300">Home</a>
+                <a href="tools.html" class="hover:text-[var(--toolzen-primary)] transition duration-300">All Tools</a>
+            </div>
+            <button id="mobileMenuBtn" class="md:hidden focus:outline-none text-2xl p-2 soft-ui soft-ui-interactive rounded-lg mobile-menu-button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+        <div id="mobileNav" class="hidden md:hidden border-t border-[var(--shadow-dark)]/30">
+            <a href="index.html" class="block text-center py-3 px-4 font-semibold hover:bg-white/50 transition duration-300">Home</a>
+            <a href="tools.html" class="block text-center py-3 px-4 font-semibold hover:bg-white/50 transition duration-300">All Tools</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="text-center my-10 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold">All-in-One Unit Converter</h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">Instantly convert between all standard units of measurement.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div id="settings-panel" class="soft-ui p-6 space-y-6 animate-in" style="animation-delay: 100ms;">
+                <h2 class="text-2xl font-bold">Settings</h2>
+                <div class="select-group">
+                    <label for="category-select"><i class="fas fa-layer-group mr-2"></i>Unit Category</label>
+                    <div class="soft-ui-inset mt-2">
+                        <select id="category-select">
+                            <option value="length">Length</option>
+                            <option value="weight">Weight / Mass</option>
+                            <option value="temperature">Temperature</option>
+                            <option value="volume">Volume</option>
+                            <option value="area">Area</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="input-value"><i class="fas fa-calculator mr-2"></i>Input Value</label>
+                    <div class="soft-ui-inset mt-2">
+                        <input type="number" id="input-value" value="1" placeholder="Enter value..." required>
+                    </div>
+                </div>
+                <div class="select-group">
+                    <label for="unit-from"><i class="fas fa-arrow-right mr-2"></i>Convert From</label>
+                    <div class="soft-ui-inset mt-2"><select id="unit-from"></select></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="convert-btn" class="btn-soft soft-ui-interactive" style="color: var(--accent-color);" disabled><i class="fas fa-exchange-alt mr-2"></i>Convert</button>
+                    <button id="reset-btn" class="btn-soft soft-ui-interactive" style="color: var(--danger-color);"><i class="fas fa-undo mr-2"></i>Reset</button>
+                </div>
+            </div>
+
+            <div id="results-panel" class="soft-ui p-6 lg:col-span-2 animate-in" style="animation-delay: 200ms;">
+                <h2 class="text-2xl font-bold">Results</h2>
+                <div id="initial-placeholder">
+                    <i class="fas fa-ruler-combined text-5xl opacity-50"></i>
+                    <p class="mt-4">Select units and enter a value to see real-time conversions.</p>
+                </div>
+                <div id="output-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                <div><h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3></div>
+                <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="index.html" class="hover:text-[var(--toolzen-primary)]">Home</a></li>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                     </ul>
+                </div>
+                <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                </div>
+                <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-6 justify-center md:justify-start text-2xl">
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full p-3 w-10 h-10 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">&copy; 2025 ARAFAT'S TOOLS. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const categorySelect = document.getElementById('category-select');
+            const unitFromSelect = document.getElementById('unit-from');
+            const inputValue = document.getElementById('input-value');
+            const convertBtn = document.getElementById('convert-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const outputList = document.getElementById('output-list');
+            const initialPlaceholder = document.getElementById('initial-placeholder');
+
+            const units = {
+                length: { meter: { name: "Meters (m)", factor: 1 }, kilometer: { name: "Kilometers (km)", factor: 0.001 }, centimeter: { name: "Centimeters (cm)", factor: 100 }, millimeter: { name: "Millimeters (mm)", factor: 1000 }, mile: { name: "Miles (mi)", factor: 0.000621371 }, yard: { name: "Yards (yd)", factor: 1.09361 }, foot: { name: "Feet (ft)", factor: 3.28084 }, inch: { name: "Inches (in)", factor: 39.3701 } },
+                weight: { kilogram: { name: "Kilograms (kg)", factor: 1 }, gram: { name: "Grams (g)", factor: 1000 }, milligram: { name: "Milligrams (mg)", factor: 1000000 }, tonne: { name: "Tonnes (t)", factor: 0.001 }, pound: { name: "Pounds (lb)", factor: 2.20462 }, ounce: { name: "Ounces (oz)", factor: 35.274 } },
+                temperature: { celsius: { name: "Celsius (°C)", toStandard: c => parseFloat(c) + 273.15, fromStandard: k => k - 273.15 }, fahrenheit: { name: "Fahrenheit (°F)", toStandard: f => ((parseFloat(f) - 32) * 5 / 9) + 273.15, fromStandard: k => (k - 273.15) * 9 / 5 + 32 }, kelvin: { name: "Kelvin (K)", toStandard: k => parseFloat(k), fromStandard: k => parseFloat(k) } },
+                volume: { liter: { name: "Liters (L)", factor: 1 }, milliliter: { name: "Milliliters (mL)", factor: 1000 }, gallon_us: { name: "Gallons (US)", factor: 0.264172 }, quart_us: { name: "Quarts (US)", factor: 1.05669 }, pint_us: { name: "Pints (US)", factor: 2.11338 }, cubic_meter: { name: "Cubic Meters (m³)", factor: 0.001 } },
+                area: { sq_meter: { name: "Sq Meters (m²)", factor: 1 }, sq_kilometer: { name: "Sq Kilometers (km²)", factor: 0.000001 }, sq_mile: { name: "Sq Miles (mi²)", factor: 3.861e-7 }, sq_foot: { name: "Sq Feet (ft²)", factor: 10.7639 }, acre: { name: "Acres", factor: 0.000247105 }, hectare: { name: "Hectares", factor: 0.0001 } }
+            };
+
+            function populateUnits(category) {
+                const unitData = units[category];
+                unitFromSelect.innerHTML = '';
+                Object.keys(unitData).forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key; option.textContent = unitData[key].name;
+                    unitFromSelect.appendChild(option);
+                });
+            }
+
+            function renderResults(category, baseUnitKey, value) {
+                const unitData = units[category];
+                outputList.innerHTML = '';
+                initialPlaceholder.style.display = 'none';
+                if (isNaN(value)) {
+                    outputList.innerHTML = `<p class="p-4" style="color: var(--danger-color);">Please enter a valid number.</p>`;
+                    return;
+                }
+                const baseUnit = unitData[baseUnitKey];
+                let valueStandard = baseUnit.toStandard ? baseUnit.toStandard(value) : value / baseUnit.factor;
+                Object.keys(unitData).forEach(key => {
+                    const unit = unitData[key];
+                    let convertedValue = unit.fromStandard ? unit.fromStandard(valueStandard) : valueStandard * unit.factor;
+                    const displayValue = convertedValue.toFixed(4).replace(/\.?0+$/, '');
+                    const card = document.createElement('div');
+                    card.className = 'soft-ui p-4';
+                    card.innerHTML = `<div class="text-sm opacity-75">${unit.name}</div><div class="text-2xl font-bold break-words">${displayValue}</div>`;
+                    outputList.appendChild(card);
+                });
+            }
+
+            function handleConvert() {
+                renderResults(categorySelect.value, unitFromSelect.value, inputValue.value);
+            }
+            
+            function handleCategoryChange() {
+                populateUnits(categorySelect.value);
+                if (inputValue.value) handleConvert(); else clearResults();
+            }
+
+            function handleInputChange() {
+                convertBtn.disabled = inputValue.value.trim() === '' || isNaN(inputValue.value);
+                if (!convertBtn.disabled) handleConvert(); else clearResults();
+            }
+            
+            function clearResults() {
+                inputValue.value = ''; outputList.innerHTML = '';
+                initialPlaceholder.style.display = 'flex';
+                convertBtn.disabled = true;
+            }
+
+            categorySelect.addEventListener('change', handleCategoryChange);
+            unitFromSelect.addEventListener('change', handleConvert);
+            inputValue.addEventListener('input', handleInputChange);
+            convertBtn.addEventListener('click', handleConvert);
+            resetBtn.addEventListener('click', clearResults);
+
+            populateUnits(categorySelect.value);
+            handleInputChange();
+            
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            mobileMenuBtn?.addEventListener('click', () => {
+                mobileNav.classList.toggle('hidden');
+                mobileMenuBtn.querySelector('i').className = mobileNav.classList.contains('hidden') ? 'fas fa-bars' : 'fas fa-times';
+            });
+        });
+    </script>
+</body>
+</html>

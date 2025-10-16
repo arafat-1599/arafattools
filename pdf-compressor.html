@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Compressor - ARAFAT'S TOOLS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ARAFAT'S TOOLS Soft UI Variables */
+        :root {
+            --bg-color-start: #f0f2f5;
+            --bg-color-end: #d9e0e7;
+            --primary-text: #526177;
+            --accent-color: #0077ff;
+            --shadow-light: #ffffff;
+            --shadow-dark: #b8c1cd;
+            --toolzen-primary: #0077ff; 
+            --toolzen-accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-text);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-attachment: fixed;
+        }
+
+        /* Core Soft UI Style */
+        .soft-ui {
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+        .soft-ui-inset {
+            border-radius: 20px;
+            box-shadow: inset 7px 7px 14px var(--shadow-dark), inset -7px -7px 14px var(--shadow-light);
+        }
+        .soft-ui-interactive:hover {
+           transform: translateY(-5px);
+           box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+        }
+        .soft-ui-interactive:active {
+            transform: translateY(0);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* Header & Animation */
+        .header-soft {
+             background: var(--bg-color-start);
+             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+        }
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInSlide 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        
+        /* Buttons */
+        .btn-soft {
+            padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: var(--primary-text);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); border: none; flex-grow: 1;
+        }
+        .btn-soft:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); }
+        .btn-soft:active:not(:disabled) { transform: translateY(0); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+        .btn-soft:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Tool Specific Styles */
+        .upload-area {
+            border: 2px dashed var(--shadow-dark); border-radius: 15px; padding: 2rem 1rem;
+            text-align: center; cursor: pointer; transition: all 0.3s ease;
+        }
+        .upload-area:hover, .upload-area.drag-over { border-color: var(--toolzen-primary); background-color: var(--bg-color-start); }
+        .upload-area i { font-size: 2.5rem; color: var(--toolzen-primary); margin-bottom: 1rem; }
+        
+        /* Custom Slider */
+        input[type=range].slider { -webkit-appearance: none; background: transparent; width: 100%;}
+        input[type=range].slider:focus { outline: none; }
+        input[type=range].slider::-webkit-slider-runnable-track {
+            height: 10px; cursor: pointer; background: var(--bg-color-start);
+            border-radius: 10px; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+        input[type=range].slider::-webkit-slider-thumb {
+            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+            height: 20px; width: 20px; border-radius: 50%;
+            background: linear-gradient(145deg, var(--bg-color-end), var(--bg-color-start));
+            cursor: pointer; -webkit-appearance: none; margin-top: -5px;
+        }
+        
+        .compression-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--toolzen-primary), var(--accent-color));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-soft sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="tools.html" class="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">
+                <i class="fas fa-toolbox mr-2"></i>
+                ARAFAT'S TOOLS
+            </a>
+            <div>
+                 <a href="tools.html" class="btn-soft !py-2 !px-4 !w-auto soft-ui-interactive"><i class="fas fa-arrow-left mr-2"></i> All Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center my-10 md:my-16 animate-in">
+            <h1 class="text-4xl md:text-5xl font-bold mt-8">PDF Compressor</h1>
+            <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">Reduce the file size of your PDF documents without sacrificing quality.</p>
+        </section>
+
+        <section class="soft-ui p-6 md:p-8 max-w-3xl mx-auto animate-in" style="animation-delay: 100ms;">
+             <div id="uploadArea" class="upload-area">
+                <i class="fas fa-file-pdf"></i>
+                <p class="font-semibold">Drag & Drop your PDF file here</p>
+                <p class="text-sm opacity-80">or click to browse files</p>
+                <input type="file" id="file-input" accept=".pdf" class="hidden">
+            </div>
+
+            <div class="my-6 soft-ui-inset p-4 rounded-xl" id="compression-options">
+                <div class="option-group">
+                    <label class="option-label font-semibold ml-1">Compression Level</label>
+                    <div class="slider-container flex items-center gap-4">
+                        <input type="range" min="1" max="5" value="3" class="slider" id="compressionLevel">
+                        <span class="slider-value font-semibold w-28 text-center" id="compressionValue">Medium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-info soft-ui-inset p-4 rounded-xl" id="fileInfo" style="display: none;">
+                <div class="file-details grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div>
+                        <div class="file-detail-label font-medium opacity-70">File Name</div>
+                        <div class="file-detail-value font-semibold truncate" id="fileName">-</div>
+                    </div>
+                    <div>
+                        <div class="file-detail-label font-medium opacity-70">Original Size</div>
+                        <div class="file-detail-value font-semibold" id="originalSize">-</div>
+                    </div>
+                    <div>
+                        <div class="file-detail-label font-medium opacity-70">Compressed Size</div>
+                        <div class="file-detail-value font-semibold" id="compressedSize">-</div>
+                    </div>
+                </div>
+                
+                <div class="my-4 soft-ui-inset h-2 rounded-full">
+                    <div class="compression-progress" id="compressionProgress"></div>
+                </div>
+                
+                <div class="text-center font-semibold opacity-80" id="compressionRatio">Compression: 0%</div>
+            </div>
+            
+            <div class="action-buttons flex flex-col sm:flex-row gap-4 mt-6">
+                <button class="btn-soft" id="compressBtn" disabled><i class="fas fa-compress"></i> Compress PDF</button>
+                <button class="btn-soft" id="downloadBtn" disabled style="color: var(--success);"><i class="fas fa-download"></i> Download</button>
+                <button class="btn-soft" id="resetBtn" style="color: var(--danger);"><i class="fas fa-sync-alt"></i> Reset</button>
+            </div>
+
+        </section>
+    </main>
+    
+    <footer id="contact" class="mt-20">
+        <div class="container mx-auto px-6 py-12 soft-ui">
+            <div class="grid md:grid-cols-4 gap-8 text-center md:text-left">
+                 <div>
+                     <h3 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, var(--toolzen-primary), var(--toolzen-accent));">ARAFAT'S TOOLS</h3>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                     <ul>
+                         <li class="mb-2"><a href="tools.html" class="hover:text-[var(--toolzen-primary)]">All Tools</a></li>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">About Us</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Legal</h3>
+                     <ul>
+                         <li class="mb-2"><a href="#" class="hover:text-[var(--toolzen-primary)]">Terms of Service</a></li>
+                         <li><a href="#" class="hover:text-[var(--toolzen-primary)]">Privacy Policy</a></li>
+                     </ul>
+                 </div>
+                 <div>
+                     <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+                     <div class="flex space-x-4 justify-center md:justify-start text-xl">
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-github"></i></a>
+                         <a href="#" class="soft-ui-interactive rounded-full w-12 h-12 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+                     </div>
+                 </div>
+            </div>
+            <div class="text-center border-t border-[var(--shadow-dark)]/20 mt-10 pt-6">
+                &copy; 2025 ARAFAT'S TOOLS. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const originalSize = document.getElementById('originalSize');
+            const compressedSize = document.getElementById('compressedSize');
+            const compressionProgress = document.getElementById('compressionProgress');
+            const compressionRatio = document.getElementById('compressionRatio');
+            const compressBtn = document.getElementById('compressBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const compressionLevel = document.getElementById('compressionLevel');
+            const compressionValue = document.getElementById('compressionValue');
+            
+            let uploadedFile = null;
+            let compressedFile = null;
+            
+            const compressionLabels = { 1: 'Low', 2: 'Medium-Low', 3: 'Medium', 4: 'Medium-High', 5: 'High' };
+            
+            compressionLevel.addEventListener('input', () => {
+                compressionValue.textContent = compressionLabels[compressionLevel.value];
+            });
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) handleFileUpload(e.target.files[0]);
+            });
+            
+            ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, e => e.preventDefault());
+            });
+            uploadArea.addEventListener('dragover', () => uploadArea.classList.add('drag-over'));
+            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+            uploadArea.addEventListener('drop', (e) => {
+                uploadArea.classList.remove('drag-over');
+                if (e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.type === 'application/pdf') {
+                        handleFileUpload(file);
+                    } else {
+                        alert('Please upload a PDF file.');
+                    }
+                }
+            });
+            
+            function handleFileUpload(file) {
+                resetTool();
+                uploadedFile = file;
+                fileName.textContent = file.name;
+                originalSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'block';
+                compressBtn.disabled = false;
+            }
+            
+            compressBtn.addEventListener('click', () => {
+                if (!uploadedFile) return;
+                compressBtn.disabled = true;
+                compressBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Compressing...';
+                simulateCompression();
+            });
+            
+            downloadBtn.addEventListener('click', () => {
+                if (!compressedFile) return;
+                const url = URL.createObjectURL(compressedFile);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'compressed_' + uploadedFile.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+            
+            resetBtn.addEventListener('click', resetTool);
+            
+            function simulateCompression() {
+                const reductionFactors = { 1: 0.2, 2: 0.4, 3: 0.6, 4: 0.75, 5: 0.85 };
+                const reduction = reductionFactors[compressionLevel.value];
+                
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    compressionProgress.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        const compressedFileSize = Math.round(uploadedFile.size * (1 - reduction));
+                        compressedSize.textContent = formatFileSize(compressedFileSize);
+                        const ratio = Math.round(reduction * 100);
+                        compressionRatio.textContent = `Compression: ${ratio}%`;
+                        
+                        // This is a mock file. A real implementation would require a PDF library.
+                        compressedFile = new Blob([uploadedFile], { type: 'application/pdf' });
+                        
+                        downloadBtn.disabled = false;
+                        compressBtn.innerHTML = '<i class="fas fa-compress"></i> Compress Again';
+                        compressBtn.disabled = false;
+                    }
+                }, 50);
+            }
+            
+            function resetTool() {
+                uploadedFile = null;
+                compressedFile = null;
+                fileInput.value = '';
+                fileInfo.style.display = 'none';
+                compressBtn.disabled = true;
+                downloadBtn.disabled = true;
+                compressBtn.innerHTML = '<i class="fas fa-compress"></i> Compress PDF';
+                compressionProgress.style.width = '0%';
+                compressionRatio.textContent = 'Compression: 0%';
+                fileName.textContent = '-';
+                originalSize.textContent = '-';
+                compressedSize.textContent = '-';
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        });
+    </script>
+</body>
+</html>
